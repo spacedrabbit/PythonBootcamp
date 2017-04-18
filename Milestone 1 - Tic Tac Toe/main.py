@@ -12,36 +12,50 @@ class TTTGame:
 
     def __init__(self):
         self.board = Board()
-        self.board.display_board()
-
         self.choose_random_player()
+        self.board.display_board()
         self.start()
 
     def start(self):
-        # todo: move logic out into player_choice
-        while self.game_over[0] is False:
-            print("\nIt is {pl}'s Turn".format(pl=self.currentplayer.playerName))
-            player_input = raw_input("Enter a value (1-9): ") # problem suggests using 1-9, but
-            adjusted = int(player_input) - 1 # working w/ zero index is easier, so adjustment is made
-            if 0 <= adjusted <= 8: # checks between 0/8 but crashes on any other char
-                self.place_marker(self.board, self.currentplayer.marker, adjusted)
-                self.update_player()
-                self.game_over = self.win_check()
-            else:
-                print("Invalid Selection")
 
-        # todo: insert board-full logic
-        print("Congrats to the winner, {pl}".format(pl=self.game_over[1].playerName))
+        while self.game_over[0] is False:
+            if self.full_board_check():
+                self.game_over = (True, None)
+                break
+
+            print("\nIt is {pl}'s Turn".format(pl=self.currentplayer.playerName))
+            choice = self.player_input()
+            self.place_marker(self.board, self.currentplayer.marker, choice)
+            self.update_player()
+            self.game_over = self.win_check()
+
+        # currently, it is possible to have a True win, but no winning player in the case
+        # of a full-board scenario
+        if self.game_over[1] != None:
+            print("Congrats to the winner, {pl}".format(pl=self.game_over[1].playerName))
+
         while self.game_over[0] is True:
-            # todo: move out into replay()
-            player_input = raw_input("Play again? (y/n) ")
-            if player_input == 'y':
-                self.game_over = (False, Player)
-                self.start()
-            elif player_input == 'n':
-                print("Play again later!")
-            else:
-                print("Unknown Selection...\n\n")
+            self.replay()
+
+    def replay(self):
+        player_input = raw_input("Play again? (y/n): ")
+        if player_input == 'y' or player_input == 'Y':
+            self.game_over = (False, Player)
+            self.board = Board()
+            self.start()
+            self.board.display_board()
+        elif player_input == 'n' or player_input == 'N':
+            print("Play again later!")
+        else:
+            print("Unknown Selection...\n\n")
+
+    def player_input(self):
+        player_input = raw_input("Enter a value (1-9): ")
+        if player_input.isdigit() and 1 <= int(player_input) <= 9:
+            return int(player_input) - 1 # problem suggests using 1-9, but working w/ zero index is easier, so adjustment is made
+        else:
+            print("Invalid Selection")
+            return self.player_input()
 
     def place_marker(self, board, marker, position):
         row = (position / 3)
@@ -78,11 +92,13 @@ class TTTGame:
         return (False, None)
 
     def full_board_check(self):
+        # if *any* square is found to be owned by None, then the board isn't full
         for row in self.board.return_rows():
             for square in row:
                 if square.ownedby == None:
                     return False
 
+        print("Board is full! Draw game.")
         return True
 
     def choose_random_player(self):
