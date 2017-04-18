@@ -25,8 +25,10 @@ class Board:
         if self.space_check(row, col):
             square = self.board[row][col]
             square.change_owner(player)
+            return True
         else:
             print("Square already played, try again")
+            return False
 
     def space_check(self, row, col):
         square = self.board[row][col]
@@ -44,6 +46,21 @@ class Board:
         row = (position / 3)
         col = position % 3
         return (row, col)
+
+    def return_rows(self):
+        return [[self.board[0][0], self.board[0][1], self.board[0][2]],
+                [self.board[1][0], self.board[1][1], self.board[1][2]],
+                [self.board[2][0], self.board[2][1], self.board[2][2]]
+                ]
+
+    def return_cols(self):
+        return [[self.board[0][0], self.board[1][0], self.board[2][0]],
+                [self.board[0][1], self.board[1][1], self.board[2][1]],
+                [self.board[0][2], self.board[1][2], self.board[2][2]] ]
+
+    def return_diag(self):
+        return [[self.board[0][0], self.board[1][1], self.board[2][2]],
+                [self.board[2][0], self.board[1][1], self.board[0][2]] ]
 
 class BoardSquare:
     ownedby = Player
