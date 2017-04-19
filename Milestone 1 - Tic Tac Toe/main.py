@@ -50,12 +50,24 @@ class TTTGame:
             print("Unknown Selection...\n\n")
 
     def player_input(self):
-        player_input = raw_input("Enter a value (1-9): ")
-        if player_input.isdigit() and 1 <= int(player_input) <= 9:
-            return int(player_input) - 1 # problem suggests using 1-9, but working w/ zero index is easier, so adjustment is made
-        else:
-            print("Invalid Selection")
-            return self.player_input()
+        # player_input = raw_input("Enter a value (1-9): ")
+        # if player_input.isdigit() and 1 <= int(player_input) <= 9:
+        #     return int(player_input) - 1 # problem suggests using 1-9, but working w/ zero index is easier, so adjustment is made
+        # else:
+        #     print("Invalid Selection")
+        #     return self.player_input()
+        
+        while True:
+            try:
+                choice = int(raw_input("Enter a value (1-9): "))
+            except ValueError:
+                print("Sorry, please enter a number from 1-9.")
+                continue
+
+            if 1 <= choice <= 9:
+                return int(choice) - 1  # problem suggests using 1-9, but working w/ zero index is easier, so adjust
+            else:
+                print("Sorry, please enter a number from 1-9.")
 
     def place_marker(self, board, marker, position):
         row = (position / 3)
