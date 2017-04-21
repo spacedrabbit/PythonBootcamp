@@ -56,7 +56,7 @@ class TTTGame:
         # else:
         #     print("Invalid Selection")
         #     return self.player_input()
-        
+
         while True:
             try:
                 choice = int(raw_input("Enter a value (1-9): "))
